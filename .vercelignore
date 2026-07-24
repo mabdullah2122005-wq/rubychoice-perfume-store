@@ -1,0 +1,7 @@
+# Never upload local secrets, data, or build output with CLI deploys.
+.env
+.env.*
+prisma/dev.db
+prisma/dev.db-journal
+.next
+node_modules

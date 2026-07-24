@@ -1,0 +1,186 @@
+// Prisma schema — Neon Postgres (pooled URL at runtime, direct URL for
+// `prisma db push`). See README.md "Going live".
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  name         String
+  passwordHash String
+  role         String         @default("CUSTOMER") // CUSTOMER | ADMIN (SQLite has no enums)
+  createdAt    DateTime       @default(now())
+  orders       Order[]
+  reviews      Review[]
+  wishlist     WishlistItem[]
+  resetTokens  PasswordResetToken[]
+}
+
+model Product {
+  id             String         @id @default(cuid())
+  slug           String         @unique
+  name           String
+  tagline        String
+  description    String
+  productType    String         @default("Eau de Parfum") // Eau de Parfum | Attar Oil
+  scentFamily    String // Floral | Woody | Fresh | Amber | Citrus | Gourmand
+  gender         String         @default("Unisex") // Women | Men | Unisex
+  notesTop       String
+  notesHeart     String
+  notesBase      String
+  priceCents     Int
+  compareAtCents Int?
+  sizeMl         Int            @default(50) // the default/base size shown first
+  sizes          Json? // extra size options: [{ ml, priceCents, compareAtCents? }]
+  stock          Int            @default(0)
+  image          String
+  featured       Boolean        @default(false)
+  published      Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  reviews        Review[]
+  orderItems     OrderItem[]
+  wishlistedBy   WishlistItem[]
+  stockAlerts    StockNotification[]
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  rating     Int
+  title      String
+  body       String
+  authorName String // display name (guest-entered, or the account's name)
+  createdAt  DateTime @default(now())
+  // Reviews can be left without an account; a logged-in user gets one editable
+  // review per product (enforced by the unique index — Postgres treats NULL
+  // userIds as distinct, so guests aren't limited by it).
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId     String?
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  String
+
+  @@unique([userId, productId])
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+
+  @@unique([userId, productId])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     Int         @unique @default(autoincrement()) // short, human-facing order id (shown as RC-…)
+  status          String      @default("PENDING") // PENDING | CONFIRMED | PAID | SHIPPED | DELIVERED | CANCELLED
+  paymentMethod   String      @default("COD") // COD | BANK | CARD
+  email           String
+  phone           String      @default("")
+  totalCents      Int
+  shippingCents   Int         @default(0)
+  discountCents   Int         @default(0)
+  couponCode      String?
+  currency        String      @default("pkr")
+  stripeSessionId String?     @unique
+  courierName     String? // e.g. TCS, Leopards — set when marked SHIPPED
+  trackingNumber  String?
+  shippingName    String
+  addressLine1    String
+  addressLine2    String?
+  city            String
+  province        String?
+  postalCode      String
+  country         String      @default("Pakistan")
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  user            User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId          String?
+  items           OrderItem[]
+}
+
+model OrderItem {
+  id         String   @id @default(cuid())
+  name       String // snapshot at purchase time
+  priceCents Int // snapshot at purchase time
+  quantity   Int
+  image      String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId    String
+  product    Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productId  String?
+}
+
+model Coupon {
+  id              String    @id @default(cuid())
+  code            String    @unique // stored uppercase
+  kind            String // PERCENT | FIXED (SQLite has no enums)
+  value           Int // percent (1-90) or paisa amount
+  minSubtotalCents Int      @default(0)
+  maxUses         Int? // null = unlimited
+  usedCount       Int       @default(0)
+  active          Boolean   @default(true)
+  expiresAt       DateTime?
+  createdAt       DateTime  @default(now())
+}
+
+// Singleton (id "main") — storefront mode + editable cover/announcement copy.
+model StoreSettings {
+  id           String    @id @default("main")
+  mode         String    @default("LIVE") // LIVE | COMING_SOON | MAINTENANCE
+  coverTitle   String    @default("")
+  coverMessage String    @default("")
+  launchAt     DateTime?
+  announcement String    @default("")
+  updatedAt    DateTime  @updatedAt
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique // sha-256 of the token sent by email
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+model StockNotification {
+  id         String    @id @default(cuid())
+  email      String
+  product    Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  String
+  createdAt  DateTime  @default(now())
+  notifiedAt DateTime?
+
+  @@unique([email, productId])
+  @@index([productId])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+}

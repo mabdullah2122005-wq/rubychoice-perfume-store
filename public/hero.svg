@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" role="img" aria-label="Perfume bottles still life">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#efe6d4"/>
+      <stop offset="1" stop-color="#e2d4bb"/>
+    </linearGradient>
+    <linearGradient id="b1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7e3c8"/><stop offset="1" stop-color="#c98f4e"/>
+    </linearGradient>
+    <linearGradient id="b2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a4038"/><stop offset="1" stop-color="#1a1512"/>
+    </linearGradient>
+    <linearGradient id="b3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2d5d2"/><stop offset="1" stop-color="#cd8288"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="900" fill="url(#sky)"/>
+  <circle cx="450" cy="360" r="260" fill="#ffffff" opacity="0.35"/>
+  <ellipse cx="450" cy="770" rx="360" ry="40" fill="#000000" opacity="0.08"/>
+  <g transform="translate(160,300)">
+    <rect x="52" y="-40" width="46" height="44" rx="8" fill="#2b241c"/>
+    <path d="M20 30 q-20 14 -20 46 v260 q0 44 38 44 h74 q38 0 38 -44 v-260 q0 -32 -20 -46 q-14 -10 -55 -10 t-55 10z" fill="url(#b1)"/>
+  </g>
+  <g transform="translate(370,180)">
+    <rect x="62" y="-50" width="56" height="52" rx="9" fill="#a8823f"/>
+    <path d="M25 40 q-25 16 -25 55 v330 q0 55 45 55 h90 q45 0 45 -55 v-330 q0 -39 -25 -55 q-18 -12 -65 -12 t-65 12z" fill="url(#b2)"/>
+    <rect x="40" y="180" width="100" height="90" rx="5" fill="#eae4da" opacity="0.95"/>
+  </g>
+  <g transform="translate(620,340)">
+    <rect x="44" y="-36" width="40" height="38" rx="7" fill="#5c2e2e"/>
+    <path d="M16 26 q-16 12 -16 40 v230 q0 40 34 40 h64 q34 0 34 -40 v-230 q0 -28 -16 -40 q-12 -9 -50 -9 t-50 9z" fill="url(#b3)"/>
+  </g>
+</svg>

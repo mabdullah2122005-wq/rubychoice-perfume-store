@@ -1,0 +1,267 @@
+@import "tailwindcss";
+
+/* ————— Monochrome editorial theme — white-dominant, black accents —————
+   Token names are kept from earlier themes (cream/ink/parchment/gold…) so
+   every existing utility class re-themes consistently:
+   cream = backgrounds (white), ink = text (near-black),
+   gold = accent (now black), wine = sale/error red. */
+@theme {
+  --color-cream: #ffffff; /* page background */
+  --color-cream-dark: #f6f6f4; /* alternate section background */
+  --color-surface: #ffffff; /* cards, inputs */
+  --color-surface-2: #f1f1ef; /* hovered / raised surface */
+  --color-parchment: #e7e5e0; /* hairline borders */
+  --color-ink: #121212; /* primary text */
+  --color-ink-soft: #6f6f6a; /* muted text */
+  --color-gold: #121212; /* accent — black in this theme */
+  --color-gold-dark: #2e2e2e; /* hover accent */
+  --color-blush: #d8d5cf;
+  --color-sage: #9a9a92;
+  --color-wine: #b3372f; /* sale badges / errors */
+}
+
+@theme inline {
+  --font-serif: var(--font-display), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-body), system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background-color: var(--color-ink);
+  color: var(--color-cream);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-parchment) transparent;
+}
+
+:focus-visible {
+  outline: 2px solid rgb(18 18 18 / 0.55);
+  outline-offset: 2px;
+}
+
+/* ————— Shared components ————— */
+@layer components {
+  .field {
+    @apply w-full rounded-xl border border-parchment bg-surface px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-ink-soft/70 focus:border-ink/60 focus:ring-1 focus:ring-ink/20;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ink px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] text-cream transition hover:bg-gold-dark hover:shadow-lg hover:shadow-black/15 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink/30 px-8 py-3.5 text-xs uppercase tracking-[0.2em] text-ink transition hover:border-ink hover:bg-ink hover:text-cream active:scale-[0.98];
+  }
+  .card-panel {
+    @apply rounded-2xl border border-parchment bg-surface;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full border border-parchment bg-cream-dark px-3 py-1 text-[10px] uppercase tracking-widest text-ink-soft;
+  }
+}
+
+/* ————— Motion ————— */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s ease-out both;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.animate-float {
+  animation: float 7s ease-in-out infinite;
+}
+
+/* Horizontal carousels scroll without a visible scrollbar. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Welcome intro — covers the page from first paint, then lifts away.
+   Sizing is fluid so it fits every screen without overflow. */
+:root[data-welcomed] .welcome-overlay {
+  display: none !important;
+}
+.welcome-overlay {
+  cursor: pointer;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  overflow: hidden;
+  background: var(--color-cream);
+  animation: welcome-out 2.4s ease forwards;
+}
+.welcome-inner {
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+}
+@keyframes welcome-out {
+  0%,
+  62% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.05);
+    visibility: hidden;
+  }
+}
+.welcome-brand {
+  margin: 0;
+  /* fluid: never overflows a small phone, grows large on desktop */
+  font-size: clamp(1.75rem, 8.5vw, 4.75rem);
+  line-height: 1.08;
+  color: var(--color-ink);
+  /* tracking values (narrower on mobile so the name always fits) */
+  --ls-start: 0.28em;
+  --ls-end: 0.16em;
+  animation: welcome-brand 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes welcome-brand {
+  0% {
+    opacity: 0;
+    letter-spacing: var(--ls-start);
+    transform: translateY(10px);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    letter-spacing: var(--ls-end);
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+.welcome-rule {
+  display: block;
+  height: 1px;
+  width: 0;
+  margin: 0.9rem auto 0;
+  background: color-mix(in srgb, var(--color-ink) 45%, transparent);
+  animation: welcome-rule 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+}
+@keyframes welcome-rule {
+  to {
+    width: clamp(3.5rem, 22vw, 5.5rem);
+  }
+}
+.welcome-tag {
+  margin: 0.85rem 0 0;
+  font-size: clamp(8px, 2.4vw, 12px);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+  opacity: 0;
+  animation: welcome-tag 0.7s ease 0.85s forwards;
+}
+@keyframes welcome-tag {
+  to {
+    opacity: 1;
+  }
+}
+/* Wider, more dramatic tracking on larger screens where there's room. */
+@media (min-width: 640px) {
+  .welcome-brand {
+    --ls-start: 0.6em;
+    --ls-end: 0.28em;
+  }
+  .welcome-tag {
+    letter-spacing: 0.42em;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .welcome-overlay {
+    animation: welcome-out-quick 0.7s ease forwards;
+  }
+  @keyframes welcome-out-quick {
+    0%,
+    40% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+  .welcome-brand,
+  .welcome-tag {
+    animation: none;
+    opacity: 1;
+    letter-spacing: var(--ls-end);
+  }
+  .welcome-rule {
+    animation: none;
+    width: clamp(3.5rem, 22vw, 5.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-float {
+    animation: none;
+  }
+}
+
+/* Display gradient text — deep monochrome */
+.text-gradient-gold {
+  background: linear-gradient(100deg, #121212 0%, #3a3a3a 60%, #6b6b6b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Animated underline for nav links */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 1.5px;
+  width: 100%;
+  background: var(--color-ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+.prose-brand p + p {
+  margin-top: 1em;
+}
