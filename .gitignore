@@ -45,5 +45,9 @@ prisma/dev.db-journal
 *.tsbuildinfo
 next-env.d.ts
 
+# AI assistant / dev-tooling files (kept locally, not part of the product)
+CLAUDE.md
+AGENTS.md
+
 .vercel
 .env*
