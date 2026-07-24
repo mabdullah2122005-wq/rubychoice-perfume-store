@@ -49,5 +49,8 @@ next-env.d.ts
 CLAUDE.md
 AGENTS.md
 
+# Local project docs (kept locally, not published)
+Ruby-Choice-Report.html
+
 .vercel
 .env*
