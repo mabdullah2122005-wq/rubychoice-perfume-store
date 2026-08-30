@@ -14,6 +14,7 @@ import CartDrawer from "@/components/CartDrawer";
 import WelcomeIntro from "@/components/WelcomeIntro";
 import { CartProvider } from "@/components/CartProvider";
 import { FavouritesProvider } from "@/components/FavouritesProvider";
+import { ToastProvider } from "@/components/ToastProvider";
 
 const display = Cormorant_Garamond({
   variable: "--font-display",
@@ -127,24 +128,26 @@ export default async function RootLayout({
         ) : (
           <CartProvider>
             <FavouritesProvider>
-            {closed && isAdmin && (
-              <div className="bg-wine px-4 py-2 text-center text-xs font-medium text-cream">
-                Storefront hidden — visitors see the{" "}
-                {settings.mode === "MAINTENANCE" ? "maintenance" : "launching-soon"} page.
-                You&apos;re seeing the store because you&apos;re an admin.{" "}
-                <Link href="/admin/settings" className="underline">
-                  Manage
-                </Link>
-              </div>
-            )}
-            <Header
-              user={user ? { name: user.name, role: user.role } : null}
-              announcement={settings.announcement}
-            />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <WhatsAppButton />
-            <CartDrawer />
+              <ToastProvider>
+                {closed && isAdmin && (
+                  <div className="bg-wine px-4 py-2 text-center text-xs font-medium text-cream">
+                    Storefront hidden — visitors see the{" "}
+                    {settings.mode === "MAINTENANCE" ? "maintenance" : "launching-soon"} page.
+                    You&apos;re seeing the store because you&apos;re an admin.{" "}
+                    <Link href="/admin/settings" className="underline">
+                      Manage
+                    </Link>
+                  </div>
+                )}
+                <Header
+                  user={user ? { name: user.name, role: user.role } : null}
+                  announcement={settings.announcement}
+                />
+                <main className="flex-1">{children}</main>
+                <Footer />
+                <WhatsAppButton />
+                <CartDrawer />
+              </ToastProvider>
             </FavouritesProvider>
           </CartProvider>
         )}

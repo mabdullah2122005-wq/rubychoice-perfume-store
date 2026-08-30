@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { site } from "@/lib/site";
@@ -156,6 +157,18 @@ export default function ProductForm({
       <div>
         <label className={labelClass} htmlFor="pf-image">Image path</label>
         <input id="pf-image" className={inputClass} required maxLength={300} value={form.image} onChange={(e) => set("image", e.target.value)} />
+        {form.image ? (
+          <div className="mt-3 inline-block overflow-hidden rounded-xl border border-parchment bg-cream-dark">
+            <Image
+              src={form.image}
+              alt={`Preview of ${form.name || "product image"}`}
+              width={160}
+              height={160}
+              className="h-32 w-32 object-cover"
+              unoptimized
+            />
+          </div>
+        ) : null}
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">

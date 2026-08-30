@@ -84,7 +84,10 @@ shipped, reset password, back-in-stock, contact + order alerts). Resend; no key 
 **`src/app/`** — storefront: `page.tsx` (304, homepage) · `shop` · `product/[slug]` · `cart` · `checkout` ·
 `favourites` · `account` · `track` (order tracking) · `login`/`register`/`forgot`/`reset` ·
 content pages: `about`, `contact`, `faq`, `shipping`, `returns`, `privacy`, `terms` ·
-SEO: `sitemap.ts`, `robots.ts` · `not-found.tsx` · `globals.css` (250 lines, all custom CSS/theme)
+SEO: `sitemap.ts`, `robots.ts` · `not-found.tsx` · `error.tsx` (root error boundary, added)
+· `loading.tsx` skeletons for `home`, `shop`, `product`, `checkout`, `favourites`, and
+the three heaviest admin pages (`admin`, `admin/products`, `admin/orders`) ·
+`globals.css` (250 lines, all custom CSS/theme) · `admin/not-found.tsx` for 404s inside admin
 
 **`src/app/api/`** — `products` (+`[slug]`, `[slug]/reviews`, `[slug]/notify`, `by-ids`) ·
 `orders` (+`track`) · `checkout` · `coupons` · `wishlist` · `newsletter` · `contact` ·
@@ -95,7 +98,9 @@ SEO: `sitemap.ts`, `robots.ts` · `not-found.tsx` · `globals.css` (250 lines, a
 `HeroSlider.tsx` · `StorySlider.tsx` · `Carousel.tsx` · `ReviewForm.tsx` · `StarRating.tsx` ·
 `FavouriteButton.tsx` / `FavouritesProvider.tsx` / `FavouritesGrid.tsx` / `FavouritesReminder.tsx` ·
 `RecentlyViewed.tsx` · `FreeShippingBar.tsx` · `NewsletterForm.tsx` · `BackInStockForm.tsx` ·
-`ContactForm.tsx` · `TrackOrderForm.tsx` (196) · `WhatsAppButton.tsx` · `WelcomeIntro.tsx` · `PolicyLayout.tsx`
+`ContactForm.tsx` · `TrackOrderForm.tsx` (196) · `WhatsAppButton.tsx` · `WelcomeIntro.tsx` ·
+`PolicyLayout.tsx` · `Skeleton.tsx` (loading primitives shared by `loading.tsx`) ·
+`ToastProvider.tsx` + `useToast()` (monochrome toast layer wrapped in `app/layout.tsx`)
 
 **`scripts/`** — `download-photos.mjs`, `generate-art.mjs` (one-off asset tooling, not part of the app)
 
@@ -106,8 +111,9 @@ SEO: `sitemap.ts`, `robots.ts` · `not-found.tsx` · `globals.css` (250 lines, a
 `PAYFAST_MERCHANT_ID` · `PAYFAST_SECURED_KEY` · `PAYFAST_BASE_URL` ·
 `RESEND_API_KEY` · `EMAIL_FROM` · `ORDER_ALERT_EMAIL` · `SEED_ADMIN_EMAIL` · `SEED_ADMIN_PASSWORD`
 
-⚠️ [.env.example](.env.example) is **stale** — it still describes SQLite and omits the PayFast
-and Resend vars. Trust this list and `.env`, not that file.
+⚠️ [.env.example](.env.example) lists every variable — Neon (pooled + direct
+URLs), Stripe, PayFast, Resend, and seed admin credentials — so trust it
+and `.env`, not earlier notes about SQLite.
 
 ## Don't read these
 

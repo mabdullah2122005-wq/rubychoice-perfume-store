@@ -36,6 +36,12 @@ body {
   color: var(--color-cream);
 }
 
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--color-parchment) transparent;

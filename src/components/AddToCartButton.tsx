@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useCart } from "./CartProvider";
+import { useToast } from "./ToastProvider";
 
 type Props = {
   product: {
@@ -18,6 +19,7 @@ type Props = {
 
 export default function AddToCartButton({ product, showQuantity = false }: Props) {
   const { addItem } = useCart();
+  const { toast } = useToast();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const soldOut = product.stock <= 0;
@@ -36,6 +38,7 @@ export default function AddToCartButton({ product, showQuantity = false }: Props
     );
     setAdded(true);
     setTimeout(() => setAdded(false), 1600);
+    toast("success", `Added ${product.name} to cart`);
   }
 
   return (
