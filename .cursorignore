@@ -1,0 +1,23 @@
+# Files Cursor must never index or feed to the model.
+
+# Secrets — real Stripe / Neon / Resend / PayFast keys live here
+.env
+.env.local
+.env.*.local
+
+# Deploy state and build output
+.vercel/
+.next/
+out/
+
+# Local database
+prisma/dev.db
+prisma/dev.db-journal
+
+# Local-only docs
+Ruby-Choice-Report.html
+
+# NOTE: node_modules is deliberately NOT listed. Cursor already skips it when
+# indexing (it's in .gitignore), and the agent is instructed to read the Next 16
+# guides in node_modules/next/dist/docs/ before writing code. Ignoring it here
+# would block that.
